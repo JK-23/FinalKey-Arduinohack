@@ -49,8 +49,11 @@
 # USB vendor ID (VID)
 # reuse of this VID by others is forbidden by USB-IF
 # official Arduino LLC VID
-# VID = 0x2341
 
+# OpenMoko
+VID = 0x1d50
+# FinalKey squat
+PID = 0x60a6
 
 # USB product ID (PID)
 # official Leonardo PID
@@ -117,7 +120,7 @@ FORMAT = ihex
 
 
 # Target file name (without extension).
-TARGET = Caterina
+TARGET = FinalKey
 
 
 # Object files directory
@@ -127,7 +130,7 @@ OBJDIR = .
 
 
 # Path to the LUFA library
-LUFA_PATH = ../../../../../../LUFA/LUFA-111009
+LUFA_PATH = ../../../../LUFA-111009
 
 
 # LUFA library compile-time options and predefined tokens
@@ -729,4 +732,3 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex eep lss sym coff extcoff doxygen clean          \
 clean_list clean_doxygen program debug gdb-config checksource
-
