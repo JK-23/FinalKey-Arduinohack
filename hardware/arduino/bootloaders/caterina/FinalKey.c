@@ -100,31 +100,44 @@ int main(void)
 	PORTB |= (1<<5);
 	
 	_delay_ms(100);
-	  
+
+	while( !eeprom_is_ready() )
+	{	}
+	
+	char fk[2];
+	
+	fk[0] =  eeprom_read_byte(0);
+	fk[1] =  eeprom_read_byte(1);
+	
+	
 	
 	int countDown = 10000;
 	DDRB |= (1<<6);
-	while( !(PINB&(1<<5)) )
+	
+	if( fk[0] != 'F' && fk[1] != 'K' )
 	{
-	  PORTB |= (1<<6);
-	  _delay_ms(40);
-	  
-	  PORTB &= ~(1<<6);
-	  _delay_ms(40);
-
-	  countDown-=80;
-	  while( countDown == 0 )
+	  while( !(PINB&(1<<5)) )
 	  {
-	    *bootKeyPtr = 0;
-	    wdt_disable();
-	    MCUSR = 0;							// clear all reset flags	
-	    SetupHardware();
-	    sei();
+	    PORTB |= (1<<6);
+	    _delay_ms(40);
+	    
+	    PORTB &= ~(1<<6);
+	    _delay_ms(40);
 
-	    while (1)
+	    countDown-=80;
+	    while( countDown == 0 )
 	    {
-		    CDC_Task();
-		    USB_USBTask();
+	      *bootKeyPtr = 0;
+	      wdt_disable();
+	      MCUSR = 0;							// clear all reset flags	
+	      SetupHardware();
+	      sei();
+
+	      while (1)
+	      {
+		      CDC_Task();
+		      USB_USBTask();
+	      }
 	    }
 	  }
 	}

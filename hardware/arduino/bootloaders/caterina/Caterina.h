@@ -71,14 +71,14 @@
 		#define L_LED_TOGGLE()	PORTC ^= (1<<7)
 		#if DEVICE_PID == 0x0037	// polarity of the RX and TX LEDs is reversed on the Micro
 			#define TX_LED_OFF()	PORTD &= ~(1<<5)
-			#define TX_LED_ON()		PORTD |= (1<<5)
+			#define TX_LED_ON()	PORTD |= (1<<5)
 			#define RX_LED_OFF()	PORTB &= ~(1<<0)
-			#define RX_LED_ON()		PORTB |= (1<<0)			
+			#define RX_LED_ON()	PORTB |= (1<<0)			
 		#else 
 			#define TX_LED_OFF()	PORTD |= (1<<5)
-			#define TX_LED_ON()		PORTD &= ~(1<<5)
+			#define TX_LED_ON()	PORTD &= ~(1<<5)
 			#define RX_LED_OFF()	PORTB |= (1<<0)
-			#define RX_LED_ON()		PORTB &= ~(1<<0)
+			#define RX_LED_ON()	PORTB &= ~(1<<0)
 		#endif
 
 	/* Type Defines: */

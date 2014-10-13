@@ -858,15 +858,15 @@
  447               		.file 4 "../../../../LUFA-111009/LUFA/Drivers/USB/Core/AVR8/../StdDescriptors.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 ConfigDescriptor.c
-     /tmp/ccWUTWRG.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccWUTWRG.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccWUTWRG.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccWUTWRG.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccWUTWRG.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccWUTWRG.s:12     .text.USB_GetNextDescriptor:0000000000000000 USB_GetNextDescriptor
-     /tmp/ccWUTWRG.s:74     .text.USB_GetNextDescriptorOfType:0000000000000000 USB_GetNextDescriptorOfType
-     /tmp/ccWUTWRG.s:158    .text.USB_GetNextDescriptorOfTypeBefore:0000000000000000 USB_GetNextDescriptorOfTypeBefore
-     /tmp/ccWUTWRG.s:251    .text.USB_GetNextDescriptorOfTypeAfter:0000000000000000 USB_GetNextDescriptorOfTypeAfter
-     /tmp/ccWUTWRG.s:328    .text.USB_GetNextDescriptorComp:0000000000000000 USB_GetNextDescriptorComp
+     /tmp/ccC83Ex2.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccC83Ex2.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccC83Ex2.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccC83Ex2.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccC83Ex2.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccC83Ex2.s:12     .text.USB_GetNextDescriptor:0000000000000000 USB_GetNextDescriptor
+     /tmp/ccC83Ex2.s:74     .text.USB_GetNextDescriptorOfType:0000000000000000 USB_GetNextDescriptorOfType
+     /tmp/ccC83Ex2.s:158    .text.USB_GetNextDescriptorOfTypeBefore:0000000000000000 USB_GetNextDescriptorOfTypeBefore
+     /tmp/ccC83Ex2.s:251    .text.USB_GetNextDescriptorOfTypeAfter:0000000000000000 USB_GetNextDescriptorOfTypeAfter
+     /tmp/ccC83Ex2.s:328    .text.USB_GetNextDescriptorComp:0000000000000000 USB_GetNextDescriptorComp
 
 NO UNDEFINED SYMBOLS

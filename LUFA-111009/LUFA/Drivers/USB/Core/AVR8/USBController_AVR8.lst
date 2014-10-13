@@ -1578,14 +1578,14 @@
  277               		.file 9 "../../../../LUFA-111009/LUFA/Drivers/USB/Core/AVR8/../AVR8/../USBTask.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 USBController_AVR8.c
-     /tmp/ccP5S16p.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccP5S16p.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccP5S16p.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccP5S16p.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccP5S16p.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccP5S16p.s:13     .text.USB_Disable:0000000000000000 USB_Disable
-     /tmp/ccP5S16p.s:82     .text.USB_ResetInterface:0000000000000000 USB_ResetInterface
-     /tmp/ccP5S16p.s:242    .text.USB_Init:0000000000000000 USB_Init
+     /tmp/ccM94gaI.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccM94gaI.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccM94gaI.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccM94gaI.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccM94gaI.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccM94gaI.s:13     .text.USB_Disable:0000000000000000 USB_Disable
+     /tmp/ccM94gaI.s:82     .text.USB_ResetInterface:0000000000000000 USB_ResetInterface
+     /tmp/ccM94gaI.s:242    .text.USB_Init:0000000000000000 USB_Init
 
 UNDEFINED SYMBOLS
 USB_INT_DisableAllInterrupts

@@ -54,7 +54,7 @@ static uint32_t CurrAddress;
  *  via a watchdog reset. When cleared the bootloader will exit, starting the watchdog and entering an infinite
  *  loop until the AVR restarts and the application runs.
  */
-static bool RunBootloader = true;
+
 
 /* Pulse generation counters to keep track of the time remaining for each pulse type */
 #define TX_RX_LED_PULSE_PERIOD 100
@@ -62,33 +62,13 @@ uint16_t TxLEDPulse = 0; // time remaining for Tx LED pulse
 uint16_t RxLEDPulse = 0; // time remaining for Rx LED pulse
 
 /* Bootloader timeout timer */
-#define TIMEOUT_PERIOD	8000
-uint16_t Timeout = 0;
+//#define TIMEOUT_PERIOD	8000
+//uint16_t Timeout = 0;
 
 uint16_t bootKey = 0x7777;
 volatile uint16_t *const bootKeyPtr = (volatile uint16_t *)0x0800;
 
-void StartSketch(void)
-{
-	cli();
-	
-	/* Undo TIMER1 setup and clear the count before running the sketch */
-	TIMSK1 = 0;
-	TCCR1B = 0;
-	TCNT1H = 0;		// 16-bit write to TCNT1 requires high byte be written first
-	TCNT1L = 0;
-	
-	/* Relocate the interrupt vector table to the application section */
-	MCUCR = (1 << IVCE);
-	MCUCR = 0;
 
-	L_LED_OFF();
-	TX_LED_OFF();
-	RX_LED_OFF();
-
-	/* jump to beginning of application space */
-	__asm__ volatile("jmp 0x0000");
-}
 
 /*	Breathing animation on L LED indicates bootloader is running */
 uint16_t LLEDPulse;
@@ -110,52 +90,65 @@ void LEDPulse(void)
  */
 int main(void)
 {
-	/* Save the value of the boot key memory before it is overwritten */
-	uint16_t bootKeyPtrVal = *bootKeyPtr;
-	*bootKeyPtr = 0;
-
-	/* Check the reason for the reset so we can act accordingly */
-	uint8_t  mcusr_state = MCUSR;		// store the initial state of the Status register
-	MCUSR = 0;							// clear all reset flags	
-
-	/* Watchdog may be configured with a 15 ms period so must disable it before going any further */
-	wdt_disable();
+	//Set pe6 (arduino 7) to output
+	DDRE |= (1<<6);
+	//set 7 to 0
+	PORTE &= ~(1<<6);
+	//Set pb5 (arduino 9) to input
+	DDRB &= ~(1<<5);	
+	//set 9 to 1 to pull it up
+	PORTB |= (1<<5);
 	
-	if (mcusr_state & (1<<EXTRF)) {
-		// External reset -  we should continue to self-programming mode.
-	} else if ((mcusr_state & (1<<PORF)) && (pgm_read_word(0) != 0xFFFF)) {		
-		// After a power-on reset skip the bootloader and jump straight to sketch 
-		// if one exists.	
-		StartSketch();
-	} else if ((mcusr_state & (1<<WDRF)) && (bootKeyPtrVal != bootKey) && (pgm_read_word(0) != 0xFFFF)) {	
-		// If it looks like an "accidental" watchdog reset then start the sketch.
-		StartSketch();
-	}
+	_delay_ms(100);
+	  
 	
-	/* Setup hardware required for the bootloader */
-	SetupHardware();
-
-	/* Enable global interrupts so that the USB stack can function */
-	sei();
-	
-	Timeout = 0;
-	
-	while (RunBootloader)
+	int countDown = 10000;
+	DDRB |= (1<<6);
+	while( !(PINB&(1<<5)) )
 	{
-		CDC_Task();
-		USB_USBTask();
-		/* Time out and start the sketch if one is present */
-		if (Timeout > TIMEOUT_PERIOD)
-			RunBootloader = false;
+	  PORTB |= (1<<6);
+	  _delay_ms(40);
+	  
+	  PORTB &= ~(1<<6);
+	  _delay_ms(40);
 
-		LEDPulse();
+	  countDown-=80;
+	  while( countDown == 0 )
+	  {
+	    *bootKeyPtr = 0;
+	    wdt_disable();
+	    MCUSR = 0;							// clear all reset flags	
+	    SetupHardware();
+	    sei();
+
+	    while (1)
+	    {
+		    CDC_Task();
+		    USB_USBTask();
+	    }
+	  }
 	}
+	PORTB |= (1<<6);
 
-	/* Disconnect from the host - USB interface will be reset later along with the AVR */
-	USB_Detach();
+	
+	
 
-	/* Jump to beginning of application space to run the sketch - do not reset */	
-	StartSketch();
+	cli();
+	
+	
+	TIMSK1 = 0;
+	TCCR1B = 0;
+	TCNT1H = 0;		// 16-bit write to TCNT1 requires high byte be written first
+	TCNT1L = 0;
+	
+	MCUCR = (1 << IVCE);
+	MCUCR = 0;
+
+/*	L_LED_OFF();
+	TX_LED_OFF();
+	RX_LED_OFF();
+	*/
+	__asm__ volatile("jmp 0x0000");
 }
 
 /** Configures all hardware required for the bootloader. */
@@ -199,15 +192,6 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 	/* Reset counter */
 	TCNT1H = 0;
 	TCNT1L = 0;
-
-	/* Check whether the TX or RX LED one-shot period has elapsed.  if so, turn off the LED */
-	if (TxLEDPulse && !(--TxLEDPulse))
-		TX_LED_OFF();
-	if (RxLEDPulse && !(--RxLEDPulse))
-		RX_LED_OFF();
-	
-	if (pgm_read_word(0) != 0xFFFF)
-		Timeout++;
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This configures the device's endpoints ready
@@ -337,7 +321,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 	else
 	{
 		uint32_t PageStartAddress = CurrAddress;
-
+	
 		if (MemoryType == 'F')
 		{
 			boot_page_erase(PageStartAddress);
@@ -486,7 +470,7 @@ void CDC_Task(void)
 		* leaving just a few hundred milliseconds so the 
 		* bootloder has time to respond and service any 
 		* subsequent requests */
-		Timeout = TIMEOUT_PERIOD - 500;
+//		Timeout = TIMEOUT_PERIOD - 500;
 	
 		/* Re-enable RWW section - must be done here in case 
 		 * user has disabled verification on upload.  */
@@ -601,7 +585,7 @@ void CDC_Task(void)
 	else if ((Command == 'B') || (Command == 'g'))
 	{
 		// Keep resetting the timeout counter if we're receiving self-programming instructions
-		Timeout = 0;
+//		Timeout = 0;
 		// Delegate the block write/read to a separate function for clarity 
 		ReadWriteMemoryBlock(Command);
 	}

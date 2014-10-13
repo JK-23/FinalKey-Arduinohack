@@ -2244,12 +2244,12 @@
  570               		.file 10 "../../../../LUFA-111009/LUFA/Drivers/USB/Core/Events.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 DeviceStandardReq.c
-     /tmp/ccOOinxM.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccOOinxM.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccOOinxM.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccOOinxM.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccOOinxM.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccOOinxM.s:13     .text.USB_Device_ProcessControlRequest:0000000000000000 USB_Device_ProcessControlRequest
+     /tmp/ccSjD454.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccSjD454.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccSjD454.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccSjD454.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccSjD454.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccSjD454.s:13     .text.USB_Device_ProcessControlRequest:0000000000000000 USB_Device_ProcessControlRequest
                             *COM*:0000000000000001 USB_Device_ConfigurationNumber
 
 UNDEFINED SYMBOLS
