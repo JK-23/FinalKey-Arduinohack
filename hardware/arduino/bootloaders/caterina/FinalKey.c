@@ -61,11 +61,7 @@ static uint32_t CurrAddress;
 uint16_t TxLEDPulse = 0; // time remaining for Tx LED pulse
 uint16_t RxLEDPulse = 0; // time remaining for Rx LED pulse
 
-/* Bootloader timeout timer */
-//#define TIMEOUT_PERIOD	8000
-//uint16_t Timeout = 0;
-
-uint16_t bootKey = 0x7777;
+uint16_t bootKey = 0x7777; //46 = F 4b=K in ascii//0x7777;
 volatile uint16_t *const bootKeyPtr = (volatile uint16_t *)0x0800;
 
 
@@ -92,40 +88,40 @@ int main(void)
 {
 	//Set pe6 (arduino 7) to output
 	DDRE |= (1<<6);
-	//set 7 to 0
+	//set 7 low
 	PORTE &= ~(1<<6);
-	//Set pb5 (arduino 9) to input
+	//Set pb5 (arduino 9) to input and pb6 (arduino 10) to output
 	DDRB &= ~(1<<5);	
-	//set 9 to 1 to pull it up
-	PORTB |= (1<<5);
+	DDRB |= (1<<6);
 	
-	_delay_ms(100);
+	//set 9 high for internal pullup
+	PORTB |= (1<<5);
 
 	while( !eeprom_is_ready() )
-	{	}
+	{}
+	
+	//uint16_t fk;
 	
 	char fk[2];
-	
 	fk[0] =  eeprom_read_byte(0);
 	fk[1] =  eeprom_read_byte(1);
 	
 	
+	int countDown = 5000;
 	
-	int countDown = 10000;
-	DDRB |= (1<<6);
-	
+
 	if( fk[0] != 'F' && fk[1] != 'K' )
 	{
 	  while( !(PINB&(1<<5)) )
 	  {
 	    PORTB |= (1<<6);
-	    _delay_ms(40);
+	    _delay_ms(25);
 	    
 	    PORTB &= ~(1<<6);
-	    _delay_ms(40);
+	    _delay_ms(25);
 
-	    countDown-=80;
-	    while( countDown == 0 )
+	    countDown-=50;
+	    if( countDown == 0 )
 	    {
 	      *bootKeyPtr = 0;
 	      wdt_disable();
@@ -320,15 +316,13 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 				  CurrAddress += 2;
 
 				HighByte = !HighByte;
-			}
-			else
-			{
-				/* Read the next EEPROM byte into the endpoint */
-				WriteNextResponseByte(eeprom_read_byte((uint8_t*)(intptr_t)(CurrAddress >> 1)));
+			} else
+                       {
+			 //We don't really need to be able to read the eeprom, but the arduino programmer expects it, so we'll return something
+                               WriteNextResponseByte('e');
+                       }
 
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
+			
 		}
 	}
 	else
@@ -361,14 +355,7 @@ static void ReadWriteMemoryBlock(const uint8_t Command)
 				
 				HighByte = !HighByte;
 			}
-			else
-			{
-				/* Write the next EEPROM byte from the endpoint */
-				eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
-
-				/* Increment the address counter after use */
-				CurrAddress += 2;
-			}
+			//We don't need to be able to write to the eeprom.
 		}
 
 		/* If in FLASH programming mode, commit the page after writing */
@@ -646,27 +633,8 @@ void CDC_Task(void)
 		WriteNextResponseByte(ProgramWord & 0xFF);
 	}
 	#endif
-	#if !defined(NO_EEPROM_BYTE_SUPPORT)
-	else if (Command == 'D')
-	{
-		// Read the byte from the endpoint and write it to the EEPROM 
-		eeprom_write_byte((uint8_t*)((intptr_t)(CurrAddress >> 1)), FetchNextCommandByte());
 
-		// Increment the address after use
-		CurrAddress += 2;
 
-		// Send confirmation byte back to the host 
-		WriteNextResponseByte('\r');
-	}
-	else if (Command == 'd')
-	{
-		// Read the EEPROM byte and write it to the endpoint 
-		WriteNextResponseByte(eeprom_read_byte((uint8_t*)((intptr_t)(CurrAddress >> 1))));
-
-		// Increment the address after use 
-		CurrAddress += 2;
-	}
-	#endif
 	else if (Command != 27)
 	{
 		// Unknown (non-sync) command, return fail code 
